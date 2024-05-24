@@ -1,0 +1,117 @@
+
+h1{
+    text-transform:uppercase;
+    font-size: 35px;
+}
+
+
+
+.d-block{
+   width: 90%;
+   position: relative;
+    left: 6%;
+}
+
+.presentation{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+}
+.presentation h1{
+    font-weight: bold;
+    padding: 10px 5px;
+}
+.presentation h3{
+    width: 80%;
+    text-align: justify;
+    padding: 10px 5px;
+}
+
+
+/*-- A propos de MyCalendar --*/
+
+.aPropos {
+    padding: 20px 10%;
+    display: flex;
+    flex-direction: column;
+}  
+.aPropos img {
+    width: 60px;
+}
+.aPropos h1{
+    font-weight: bold;
+}
+.list_box {
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    grid-template-columns: repeat(3,265px);
+    grid-gap: 10px;
+    margin: 10px auto;
+}
+.list_box .box {
+    text-align: center;
+    background-color: #FAF8F4;
+    border-radius: 4px;
+    padding: 50px 25px;
+    margin: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+.list_box .box h2 {
+    margin: 10px 0;
+    color: var(--blue--);
+    letter-spacing: 1px;
+    text-transform: capitalize;
+}
+.list_box .box p {
+    color: #999;
+}
+
+@media screen and (max-width : 1350px) {
+        .list_box{
+            grid-template-columns: repeat(auto-fill,265px);
+        }
+}
+
+@media screen and (max-width:500px) {
+        .presentation h1 , .aPropos h1{
+            font-size: 20px;
+        }
+        .presentation h3{
+            font-size: 15px;
+        }
+}
+
+/*-- Calendar Link --*/
+
+.calendarLink{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 15px 0;
+    padding: 10px;
+}
+
+.calendarLink h4{
+    font-weight: bold;
+}
+
+.calendarLink .calendar{
+    background-color: #198754;
+    border: solid;
+    width: 200px;
+    text-decoration: none;
+    color: #fff;
+    border-radius: 10px;
+    padding: 5px 0 10px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.calendarLink .calendar:hover{
+    background:none;
+    border: solid #198754;
+    color: #000;
+}
