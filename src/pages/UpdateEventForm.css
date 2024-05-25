@@ -1,0 +1,14 @@
+.update-event-form {
+    /* Add styling for the form */
+    /* Example: */
+    display: flex;
+    flex-direction: column;
+}
+
+.update-event-form input,
+.update-event-form button {
+    /* Add styling for input fields and buttons */
+    /* Example: */
+    margin-bottom: 10px;
+    padding: 5px;
+}

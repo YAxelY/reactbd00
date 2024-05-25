@@ -1,0 +1,38 @@
+.form-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form-input {
+    flex: 1 1 300px; /* Adjust the width as needed */
+    margin-right: 10px; /* Adjust spacing between inputs */
+    margin-bottom: 10px; /* Adjust spacing between rows */
+}
+
+.event-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 300px;
+    margin: auto;
+}
+
+label {
+    margin-bottom: 5px;
+}
+
+input {
+    margin-bottom: 10px;
+    padding: 5px;
+}
+
+button {
+    padding: 8px 12px;
+    background-color:#198754;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #198754;
+}

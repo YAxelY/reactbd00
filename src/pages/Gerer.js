@@ -1,104 +1,125 @@
 import React, { useState } from 'react';
-import { FaPen, FaTimes } from 'react-icons/fa';
 import './Gerer.css';
+import axios from 'axios';
+import AddEvent from '../components/events/AddEvent';
+import UpdateEventForm from './UpdateEventForm';
+import UpdateEvent from '../components/events/UpdateEvent' // Import the UpdateEvent component
+import DeleteEvent from '../components/events/DeleteEvent'; // Import the DeleteEvent component
 
 function Gerer() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(null);
-    const [eventForm, setEventForm] = useState({
-        eventName: '',
-        eventTime: '',
-        eventDescription: ''
+    const [events, setEvents] = useState({
+        "2024-12-12": [
+            {
+                id: 1,
+                title: "Rendez-vous chez le médecin",
+                dateDebut: "2024-12-12",
+                dateFin: "2024-12-12",
+                heureDebut: "10:00",
+                heureFin: "11:00",
+                lieu: "Clinique du Centre"
+            },
+            {
+                id: 2,
+                title: "Dîner avec des amis",
+                dateDebut: "2024-12-12",
+                dateFin: "2024-12-12",
+                heureDebut: "19:00",
+                heureFin: "21:00",
+                lieu: "Restaurant Le Petit Paris"
+            }
+        ]
     });
-    const [events, setEvents] = useState({});
+
+    const [showUpdateForm, setShowUpdateForm] = useState(false);
+    const [Event, setEvent] = useState([]);
+
 
     const addMonths = (numMonths) => {
-        const newDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + numMonths, 1);
-        setCurrentDate(newDate);
-        setSelectedDate(null);
+        const newDate = new Date(currentDate.setMonth(currentDate.getMonth() + numMonths));
+        setCurrentDate(new Date(newDate));
     };
 
-    const daysInMonth = (date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
-    const firstDayOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    const daysInMonth = (date) => {
+        return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    };
+
+    const firstDayOfMonth = (date) => {
+        return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+    };
+
     const dayLabels = ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'];
 
-    const handleDayClick = (day) => {
-        const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-        setSelectedDate(date);
-        setEventForm({
-            eventName: '',
-            eventTime: '',
-            eventDescription: ''
-        });
+    const renderDayLabels = () => {
+        return dayLabels.map((day, index) => (
+            <div key={index} className="day-label">{day}</div>
+        ));
     };
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setEventForm(prevForm => ({
-            ...prevForm,
-            [name]: value
+    const formatDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+ const handleDayClick = async (day) => {
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    setSelectedDate(date);
+    const formattedDate = formatDate(date);
+    console.log(formattedDate);
+    try {
+        const response = await axios.get(`http://localhost:8085/events/${formattedDate}`); // Make API request
+        const eventData = response.data.map(event => ({
+            id: event.id,
+            title: event.description,
+            dateDebut: event.dateDebut || '-',
+            dateFin: event.dateFin || '-',
+            heureDebut: event.heureDebut || '-',
+            heureFin: event.heureFin || '-',
+            lieu: event.lieu || '-'
         }));
-    };
+        setEvents({ ...events, [formattedDate]: eventData }); // Update events state with fetched data
+        console.log('Events:', events); // Log the updated events state
+        console.log(response.data);
+    } catch (error) {
+        console.error('Error fetching events:', error);
+    }
+};
 
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        if (!selectedDate) return;
 
-        const { eventName, eventTime, eventDescription } = eventForm;
-        const formattedDate = selectedDate.toISOString().slice(0, 10);
+const handleUpdate = (event) => {
+    setEvent(event);
+    setShowUpdateForm(true);
+   
+};
 
-        setEvents(prevEvents => ({
-            ...prevEvents,
-            [formattedDate]: [...(prevEvents[formattedDate] || []), { name: eventName, time: eventTime, description: eventDescription }]
-        }));
-
-        setSelectedDate(null);
-        setEventForm({
-            eventName: '',
-            eventTime: '',
-            eventDescription: ''
-        });
-    };
-
-    const handleEventEdit = (date, index) => {
-        const eventToEdit = events[date][index];
-        setEventForm({
-            eventName: eventToEdit.name,
-            eventTime: eventToEdit.time,
-            eventDescription: eventToEdit.description
-        });
-        setSelectedDate(new Date(date));
-    };
-
-    const handleEventDelete = (date, index) => {
-        const updatedEvents = { ...events };
-        updatedEvents[date].splice(index, 1);
-        if (updatedEvents[date].length === 0) delete updatedEvents[date];
-        setEvents(updatedEvents);
-    };
+const handleDelete = async (eventId) => {
+    try {
+        await axios.delete(`http://localhost:8085/${eventId}`);
+        window.location.reload();
+        // Update events state or any UI as needed after successful deletion
+    } catch (error) {
+        console.error('Error deleting event:', error);
+    }
+};
 
     const renderCalendar = () => {
         const days = [];
-        const daysCount = daysInMonth(currentDate);
-        const firstDay = firstDayOfMonth(currentDate);
+        const date = new Date(currentDate);
+        const daysCount = daysInMonth(date);
+        const firstDay = firstDayOfMonth(date);
 
         for (let i = 0; i < firstDay; i++) {
             days.push(<div key={`empty-${i}`} className="empty"></div>);
         }
 
         for (let day = 1; day <= daysCount; day++) {
-            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
-            const formattedDate = date.toISOString().slice(0, 10);
-            const hasEvents = events[formattedDate] && events[formattedDate].length > 0;
-
             days.push(
-                <div 
-                    key={day} 
-                    className={`day ${selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentDate.getMonth() && selectedDate.getFullYear() === currentDate.getFullYear() ? 'selected' : ''}`} 
-                    onClick={() => handleDayClick(day)}
-                >
+                <div key={day} className={`day ${selectedDate && selectedDate.getDate() === day && selectedDate.getMonth() === currentDate.getMonth() && selectedDate.getFullYear() === currentDate.getFullYear() ? 'selected' : ''}`} 
+                     onClick={() => handleDayClick(day)}>
                     {day}
-                    {hasEvents && <div className="event-marker"></div>}
                 </div>
             );
         }
@@ -108,8 +129,8 @@ function Gerer() {
 
     const renderSelectedDate = () => {
         if (!selectedDate) return <div className="event-details">Aucun jour sélectionné</div>;
-
-        const formattedDate = selectedDate.toISOString().slice(0, 10);
+    
+        const formattedDate = formatDate(selectedDate);
         const dayEvents = events[formattedDate] || [];
         return (
             <div className="event-details">
@@ -117,13 +138,17 @@ function Gerer() {
                 {dayEvents.length > 0 ? (
                     <ul>
                         {dayEvents.map((event, index) => (
-                            <li key={index}>
-                                <strong>{event.name}</strong> à {event.time}<br/>
-                                <span>{event.description}</span>
-                                <div className="event-actions">
-                                    <button onClick={() => handleEventEdit(formattedDate, index)}><FaPen /></button>
-                                    <button onClick={() => handleEventDelete(formattedDate, index)}><FaTimes /></button>
-                                </div>
+                            <li key={index} className="event-item">
+                                <p><strong>Titre: </strong>{event.title}</p>
+                                <p><strong>Date de début: </strong>{event.dateDebut}</p>
+                                <p><strong>Date de fin: </strong>{event.dateFin}</p>
+                                <p><strong>Heure de début: </strong>{event.heureDebut}</p>
+                                <p><strong>Heure de fin: </strong>{event.heureFin}</p>
+                                <p><strong>Lieu: </strong>{event.lieu}</p>
+                                {/* Update button */}
+                                <button onClick={() => handleUpdate(event)}>Modifier</button>
+                                {/* Delete button */}
+                                <button onClick={() => handleDelete(event.id)}>Supprimer</button>
                             </li>
                         ))}
                     </ul>
@@ -131,51 +156,33 @@ function Gerer() {
             </div>
         );
     };
-
-    const renderForm = () => {
-        if (!selectedDate) return null;
-        return (
-            <div className="event-form-container">
-                <form onSubmit={handleFormSubmit}>
-                    <h2>Ajouter un événement pour le {selectedDate.toLocaleDateString()}</h2>
-                    <label>Nom de l'événement:</label>
-                    <input type="text" name="eventName" value={eventForm.eventName} onChange={handleInputChange} required autoSave='false' />
-
-                    <label>Heure de l'événement:</label>
-                    <input type="time" name="eventTime" value={eventForm.eventTime} onChange={handleInputChange} required />
-
-                    <label>Description de l'événement:</label>
-                    <textarea name="eventDescription" value={eventForm.eventDescription} onChange={handleInputChange} required />
-
-                    <button type="submit">Valider</button>
-                </form>
-            </div>
-        );
-    };
-
+    
+    
     return (
-        <div className='container'>
-            <div className="calendar-container">
-                <div className="calendar">
-                    <div className="header">
-                        <button className="nav-button" onClick={() => addMonths(-1)}>&lt;</button>
-                        <span className="month-year">
-                            {currentDate.toLocaleString('fr', { month: 'long', year: 'numeric' })}
-                        </span>
-                        <button className="nav-button" onClick={() => addMonths(1)}>&gt;</button>
+        <div className='row'>
+            <div className='col-8'>
+                <div className="calendar-container">
+                    <div className="calendar">
+                        <div className="header">
+                            <button className="nav-button" onClick={() => addMonths(-1)}>&lt;</button>
+                            <span className="month-year">
+                                {currentDate.toLocaleString('fr', { month: 'long', year: 'numeric' })}
+                            </span>
+                            <button className="nav-button" onClick={() => addMonths(1)}>&gt;</button>
+                        </div>
+                        <div className="day-labels">
+                            {renderDayLabels()}
+                        </div>
+                        <div className="days">
+                            {renderCalendar()}
+                        </div>
                     </div>
-                    <div className="day-labels">
-                        {dayLabels.map((day, index) => (
-                            <div key={index} className="day-label">{day}</div>
-                        ))}
-                    </div>
-                    <div className="days">
-                        {renderCalendar()}
-                    </div>
+
+                    {showUpdateForm && <UpdateEventForm event={Event} onUpdate={() => setShowUpdateForm(false)} />}
+                    {renderSelectedDate()}
+                    <AddEvent />
                 </div>
-                {renderSelectedDate()}
             </div>
-            {renderForm()}
         </div>
     );
 }
