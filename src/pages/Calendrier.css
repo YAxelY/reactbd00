@@ -8,6 +8,11 @@
     flex-direction: column;
     align-items: center;
   }
+
+  .cCalendar{
+    display: flex;
+    
+  }
   
   .calendar {
     width: 100%;

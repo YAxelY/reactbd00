@@ -125,7 +125,7 @@ function Gerer() {
     };
 
     return (
-        <div className='row'>
+        <div className='cCalendar'>
             <div className='col-8'>
                 <div className="calendar-container">
                     <div className="calendar">

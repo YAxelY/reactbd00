@@ -5,19 +5,13 @@ import { FaUser } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ addNotification }) => {
     const navLinksRef = useRef(null);
     const notifRef = useRef(null);
     const [notifications, setNotifications] = useState([
         { id: 1, title: '', message: 'Cours de SVT le 15/06/2024 à 14:00' },
         { id: 2, title: '', message: 'Évaluation de SVT le 17/06/2024 à 12:00' },
-        { id: 3, title: '', message: 'Cours de SVT le 15/06/2024 à 14:00' },
-        { id: 5, title: '', message: 'Rassemblement à la cour le 21/06/2024 à 7:20' },
-        { id: 4, title: '', message: 'Cours de SVT le 15/06/2024 à 14:00' },
-        { id: 6, title: '', message: 'Rassemblement à la cour le 21/06/2024 à 7:20' },
-        { id: 7, title: '', message: 'Rassemblement à la cour le 21/06/2024 à 7:20' },
-        { id: 8, title: '', message: 'Rassemblement à la cour le 21/06/2024 à 7:20' },
-        { id: 9, title: '', message: 'Affichage des résultats du premier semestre le 21/06/2024 à 12:00' },
+        // Other initial notifications
     ]);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
