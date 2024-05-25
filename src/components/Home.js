@@ -25,22 +25,19 @@ const Home = () => {
                             <div className="carousel-item   active">
                                 <img src={image3} className="d-block w-1" alt="First slide"/>
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>First slide label</h5>
-                                    <p>Some representative placeholder content for the first slide.</p>
+                                   
                                 </div>
                             </div>
                             <div className="carousel-item">
                                 <img src={image1} className="d-block w-1" alt="Second slide"/>
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Second slide label</h5>
-                                    <p>Some representative placeholder content for the second slide.</p>
+                                    
                                 </div>
                             </div>
                             <div className="carousel-item">
                                 <img src={image2} className="d-block w-1" alt="Third slide"/>
                                 <div className="carousel-caption d-none d-md-block">
-                                    <h5>Third slide label</h5>
-                                    <p>Some representative placeholder content for the third slide.</p>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -60,7 +57,7 @@ const Home = () => {
 
             <div className='presentation'>
                     <h1 className='title'>Bienvenu sur MyCalendar</h1>
-                    <h3 className='description'>Naviguez facilement à travers les mois, ajoutez des événements et recevez des rappels pour ne manquer aucune date importante. Nous sommes ravis de vous accompagner dans la gestion de votre emploi du temps et espérons que notre calendrier deviendra un outil incontournable dans votre quotidien. Bienvenue et bonne organisation !</h3>
+                    <h3 className='description'>Nous sommes ravis de vous accompagner dans la gestion de votre emploi du temps et espérons que notre calendrier deviendra un outil incontournable dans votre quotidien. Bienvenue et bonne organisation !</h3>
             </div>
 
             <div className='aPropos'>
